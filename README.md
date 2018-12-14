@@ -2,9 +2,7 @@
 
 	v0.0.3 - progress bar 추가, hdf5 to convert 수정, Accum 기능, 체크박스로 ui 수정, Make CSV 기능 및 ui 수정
 	v0.0.4 - 일부 output path 텍스트 박스 Enable 상태 변환(임의 경로 입력 방지)
-	v0.0.5 - clip 메뉴, 파일 선택(TIFF) 기능 추가
-		(기존 : 필수 HDF to convert 기능 수행 후 CLIP 사용, 변경 : 바로 CLIP 기능 사용 가능하도록 조치)
-		
+	v0.0.5 - clip 메뉴, 파일 선택(TIFF) 기능 추가(기존 : 필수 HDF to convert 기능 수행 후 CLIP 사용, 변경 : 바로 CLIP 기능 사용 가능하도록 조치)
 	v0.0.6
 		TITLE 변경
 		MAKE ASC 진행률 바 추가됨.
@@ -51,3 +49,10 @@
 	
 	v0.0.17
 		Satellitecorrection - 오류 수정
+		
+	v0.0.18
+		Make CSV - message 오류 수정
+		Satellitecorrection - 플러그인 구동 확인
+		
+	v0.0.19
+		CLIP - Shape FILE CLIP 추가, 사용자 지정 CLIP 추가, 사용자 clip 콤보 박스 추가 가능
