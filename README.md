@@ -56,3 +56,7 @@
 		
 	v0.0.19
 		CLIP - Shape FILE CLIP 추가, 사용자 지정 CLIP 추가, 사용자 clip 콤보 박스 추가 가능
+	
+	v0.0.20
+		CLIP - Shape FILE clip 기능에서 polygon type만 허용되도록 수정.
+		Make image - png 파일 배경 shape 추가
