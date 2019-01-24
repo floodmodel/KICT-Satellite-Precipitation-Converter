@@ -1,4 +1,5 @@
 # GPM
+### Change Log
 
 	v0.0.3 - progress bar 추가, hdf5 to convert 수정, Accum 기능, 체크박스로 ui 수정, Make CSV 기능 및 ui 수정
 	v0.0.4 - 일부 output path 텍스트 박스 Enable 상태 변환(임의 경로 입력 방지)
@@ -60,3 +61,9 @@
 	v0.0.20
 		CLIP - Shape FILE clip 기능에서 polygon type만 허용되도록 수정.
 		Make image - png 파일 배경 shape 추가
+		
+	v0.0.21
+		Data Download - early --> late 사용으로 ftp 경로 수정
+	
+	v0.0.22
+		Make image - png 파일 배경 shape 추가, 일부 수정
