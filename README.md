@@ -67,3 +67,14 @@
 	
 	v0.0.22
 		Make image - png 파일 배경 shape 추가, 일부 수정
+	
+	v0.0.23
+		Satellitecorrection - 일부 수정
+	
+	v0.0.24
+		File selection window uniformity.
+		ADD KICT Marker
+		File select dir fixed("C://")
+		Data Download - Add User ID/PW input text window
+		CLIP - partial modification
+		Satellitecorrection - partial modification
