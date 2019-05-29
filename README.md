@@ -78,3 +78,13 @@
 		Data Download - Add User ID/PW input text window
 		CLIP - partial modification
 		Satellitecorrection - partial modification
+		
+	v0.0.25
+		TOTAL = Path 보완
+		Accum - argument 보완
+		
+	v0.0.26
+		Make Image - Base Shape layer 
+		
+	v0.0.27
+		Data Download - cmorph 데이터 다운로드(0.25deg, 3hr), UI 변경
