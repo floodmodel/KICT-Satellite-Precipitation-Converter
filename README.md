@@ -92,3 +92,9 @@
 	v0.0.28
 		Data Download - CMORPH 데이터 다운로드 경로 오류 수정.
 		(https://ftp.cpc.ncep.noaa.gov/precip/CMORPH_V1.0/CRT/0.25deg-3HLY/)
+		
+	v0.0.29
+		기능 명 변경 : HDF5_Convert --> Convert_to_TIFF
+		
+		Data Download - CMORPH 데이터 다운로드 날짜 오작동 수정
+		Convert_to_TIFF - CMORPH 데이터 변환	
