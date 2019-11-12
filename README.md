@@ -1,6 +1,6 @@
-# GPM
-### Change Log
-
+<details>
+<summary>QGIS 2버전 GPM Change Log 버튼</summary>
+<div markdown="1">
 	v0.0.3 - progress bar 추가, hdf5 to convert 수정, Accum 기능, 체크박스로 ui 수정, Make CSV 기능 및 ui 수정
 	v0.0.4 - 일부 output path 텍스트 박스 Enable 상태 변환(임의 경로 입력 방지)
 	v0.0.5 - clip 메뉴, 파일 선택(TIFF) 기능 추가(기존 : 필수 HDF to convert 기능 수행 후 CLIP 사용, 변경 : 바로 CLIP 기능 사용 가능하도록 조치)
@@ -98,3 +98,56 @@
 		
 		Data Download - CMORPH 데이터 다운로드 날짜 오작동 수정
 		Convert_to_TIFF - CMORPH 데이터 변환	
+			
+	v0.0.30
+		Convert_to_TIFF - CMORPH 데이터 변환 일부 수정됨
+		
+	v0.0.31
+		플러그인 Name 개명(GPM >>> Kict_Satellite_Precipitation_Converter)
+		CLIP - clip zone [ korea ] 영역 범위 수정
+		
+	v0.0.32
+		Data Download - 프로그레스 바 추가, batch 파일 실행 방식이 아닌 자동 다운로드 방식으로 변경
+		CLIP - clip zone [North_korea] 추가
+	
+	v0.0.33
+		Data Download - 다운받을 파일의 목록 .listing 파일 바탕화면에 생성
+		Make image - step1 | step2 폴더 분리, step1은 일반 이미지,step2 는 shape 파일 중첩 이미지
+		
+	v0.0.34
+		하단 로고 이미지 변경
+		
+	v0.0.35
+		Convert To Tiff - CMORPH Converter 갱신
+		Make image - PNG 이미지 배경 여백 축소
+		
+	v0.0.36
+		Convert To Tiff - 기능 개선
+		Accum - 인식 오류 문제 확인
+	
+	v0.0.37
+		Convert To Tiff - CMORPH 변환 기능 Patch
+		Make image - polygon 외곽선 색 변경 가능
+</div>
+</details>
+
+# KICT Satellite Precipitation Converter
+### (old) GPM
+	KICT Satellite Precipitation Converter In QGIS 3
+
+	v0.0.38
+		: Data Download -  ADD Data GSMap
+		: Convert to TIFF - Convert GSMap to TIFF
+		: Make CSV - Add ComboBox FieldName
+		: Accum - ADD GSMap
+		: Make Image - change color polygon, polyline, change symbol point 
+	
+	v0.0.39
+		: Convert to TIFF - Normalize Convert HDF5 to TIFF 
+		: Accum - (CMORPH, GSMap) Modification of Cumulative Rainfall Calculation
+		
+	v0.0.40
+		: Make Image - Some modify, create GIF Filename
+	
+	v0.0.41
+		: Accum - Modify Path (SAGA.cmd, OSGeo4W.bat)
