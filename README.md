@@ -133,7 +133,7 @@
 </details>
 
 # KICT Satellite Precipitation Converter
-* **QGIS3.8에서 운영되는 plug-in 만 제공되고 있습니다.** <br/>
+* **2021년 12월 현재 QGIS3.8에서 운영되는 plug-in 만 제공되고 있습니다.** <br/>
   
 #### (old) GPM
 	KICT Satellite Precipitation Converter In QGIS 3
