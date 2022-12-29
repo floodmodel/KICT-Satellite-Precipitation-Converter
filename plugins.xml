@@ -8,7 +8,7 @@
   <homepage>https://github.com/floodmodel/Converter</homepage>
   <file_name>Kict_Satellite_Precipitation_Converter-v0.1.0.zip</file_name>
   <author_name>KICT, Hermesys</author_name>
-  <download_url></download_url>
+  <download_url>https://raw.githubusercontent.com/floodmodell/Converter/main/Kict_Satellite_Precipitation_Converter-v0.1.0.zip</download_url>
   <experimental>True</experimental>
   <deprecated>False</deprecated>
   <tags>GPM</tags>
