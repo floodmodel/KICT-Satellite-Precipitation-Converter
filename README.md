@@ -1,26 +1,14 @@
 # KICT Satellite Precipitation Converter
-* **2021년 12월 현재 제공하는 plug-in은 QGIS3.8에서 운영됩니다..** <br/>
+* **2022년 12월 현재 제공하는 plug-in은 QGIS3.22(QGIS 3.22.14 LTR 기준)에서 시범운영중입니다..** <br/>
 
   
 #### Update History
 	KICT Satellite Precipitation Converter In QGIS 3
 
-	v0.0.38
-		: Data Download -  ADD Data GSMap
-		: Convert to TIFF - Convert GSMap to TIFF
-		: Make CSV - Add ComboBox FieldName
-		: Accum - ADD GSMap
-		: Make Image - change color polygon, polyline, change symbol point 
-	
-	v0.0.39
-		: Convert to TIFF - Normalize Convert HDF5 to TIFF 
-		: Accum - (CMORPH, GSMap) Modification of Cumulative Rainfall Calculation
-		
-	v0.0.40
-		: Make Image - Some modify, create GIF Filename
-	
-	v0.0.41
-		: Accum - Modify Path (SAGA.cmd, OSGeo4W.bat)
+	v0.0.66
+		: qgis 3.22 이상 버전에서 사용 가능하도록 코드 수정됨
+		: data downlod 기능 - 날짜 형식을 고정시킴
+		: network check 코드 수정
 
 
 <details>
@@ -154,5 +142,22 @@
 	v0.0.37
 		Convert To Tiff - CMORPH 변환 기능 Patch
 		Make image - polygon 외곽선 색 변경 가능
+		
+	v0.0.38
+		: Data Download -  ADD Data GSMap
+		: Convert to TIFF - Convert GSMap to TIFF
+		: Make CSV - Add ComboBox FieldName
+		: Accum - ADD GSMap
+		: Make Image - change color polygon, polyline, change symbol point 
+	
+	v0.0.39
+		: Convert to TIFF - Normalize Convert HDF5 to TIFF 
+		: Accum - (CMORPH, GSMap) Modification of Cumulative Rainfall Calculation
+		
+	v0.0.40
+		: Make Image - Some modify, create GIF Filename
+	
+	v0.0.41
+		: Accum - Modify Path (SAGA.cmd, OSGeo4W.bat)
 </div>
 </details>
