@@ -2,7 +2,7 @@
 <plugins>
  <pyqgis_plugin name="KICT Satellite Precipitation Converter" version="0.1.0">
   <description>KICT Satellite Precipitation Converter Plugin</description>
-  <about>Kict_Satellite_Precipitation_Converter-0.1.0</about>
+  <about>KICT Satellite Precipitation Converter-0.1.0</about>
   <version>0.1.0</version>
   <qgis_minimum_version>3.0</qgis_minimum_version>
   <homepage>https://github.com/floodmodel/Converter</homepage>
