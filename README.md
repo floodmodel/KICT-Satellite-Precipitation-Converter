@@ -10,6 +10,8 @@
 		: data downlod 기능 - 날짜 형식을 고정시킴
 		: network check 코드 수정
 
+	v0.1.1 이후는 여기를 참고해 주십시요
+		: https://github.com/floodmodel/Converter/releases
 
 <details>
 <summary>Last Change Log</summary>
