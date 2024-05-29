@@ -361,4 +361,3 @@ class util:
             return True
         except urllib.error.URLError as e:
             print(e.reason)
-            
