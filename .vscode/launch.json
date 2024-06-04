@@ -13,7 +13,7 @@
               {
                   "localRoot": "${workspaceFolder}/Kict_Satellite_Precipitation_Converter",
                   "remoteRoot": "C:/Users/${env:USERNAME}/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/Kict_Satellite_Precipitation_Converter"
-              }
+                }
           ]
       }
   ]

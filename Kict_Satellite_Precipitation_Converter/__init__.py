@@ -23,6 +23,7 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
+
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
     """Load GPM class from file GPM.
@@ -32,9 +33,12 @@ def classFactory(iface):  # pylint: disable=invalid-name
     """
     #
     import logging
-    logging.basicConfig(filename='log_test.log', encoding='utf-8', level=logging.DEBUG)
-    logging.debug('test')
+
+    logging.basicConfig(filename="log_test.log", encoding="utf-8", level=logging.DEBUG)
+    logging.debug("test")
     from .Util import util
+
     util().import_or_install("imageio")
     from .GPM import GPM
+
     return GPM(iface)
