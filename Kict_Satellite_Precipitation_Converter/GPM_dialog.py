@@ -23,6 +23,7 @@
 """
 
 import csv
+import datetime
 import getpass
 import os
 import shutil
@@ -180,7 +181,8 @@ class GPMDialog(QtWidgets.QMainWindow, FORM_CLASS):
         # check 상태에 따라 선택 파일 달라짐
         self.btn_input_hdf5.clicked.connect(self.check_data_select)
         self.txt_hdf5_inPath.setText("Grid")
-        self.txt_hdf_inName.setText("precipitationCal")
+        # self.txt_hdf_inName.setText("precipitationCal")
+        self.txt_hdf_inName.setText("precipitation")
         self.btn_Apply_Convert.clicked.connect(self.check_data_process)
         self.Set_Convert_table_layerlist()
         self.btn_Output_Folder_Convert.clicked.connect(
@@ -1101,9 +1103,11 @@ class GPMDialog(QtWidgets.QMainWindow, FORM_CLASS):
 
                 if self.rdo_HDF5.isChecked():
                     if download_type.upper() == "EARLY":
-                        HDForTiff = "imerg/early"
+                        # HDForTiff = "imerg/early"
+                        HDForTiff = "GPM_3IMERGHHE.07"
                     elif download_type.upper() == "LATE":
-                        HDForTiff = "imerg/late"
+                        # HDForTiff = "imerg/late"
+                        HDForTiff = "GPM_3IMERGHHL.07"
                 elif self.rdio_Tiff.isChecked():
                     if download_type.upper() == "EARLY":
                         HDForTiff = "imerg/gis/early"
@@ -1111,10 +1115,31 @@ class GPMDialog(QtWidgets.QMainWindow, FORM_CLASS):
                         HDForTiff = "imerg/gis"
                 startdate = self.start_date.text()
                 enddate = self.end_date.text()
+                self.days = (
+                    datetime.datetime.strptime(enddate, "%Y-%m-%d").date()
+                    - datetime.datetime.strptime(startdate, "%Y-%m-%d").date()
+                ).days
+
+                # for day in range(int(self.days) + 2):
+                # current_date = datetime.datetime.strptime(
+                #    startdate, "%Y-%m-%d"
+                # ).date() + datetime.timedelta(days=day)
+
+                # day_of_year = current_date.timetuple().tm_yday
+
+                # self.j_date = f"{day_of_year:03d}"
                 path = self.txt_bat_path.text()
-                url = "https://jsimpsonhttps.pps.eosdis.nasa.gov/text"
+
+                # url = "https://jsimpsonhttps.pps.eosdis.nasa.gov/text"
+                # 아래 url 24.07.16 수정 - 오
+                url = "https://gpm1.gesdisc.eosdis.nasa.gov/data/GPM_L3"
+                # url = "https://{0}:{1}@urs.earthdata.nasa.gov".format(
+                #    userId, userPw
+                # ) < login and data download url
+
                 # 네트워크 확인해서 접속 끊어 지면 다운로드 중지
-                network_flag = _util.connected_to_internet(url)
+                # network_flag = _util.connected_to_internet(url)
+                network_flag = _util.connected_to_requests(url)
                 if not (network_flag):
                     _util.MessageboxShowError(
                         "Network error", " Check network connection."
@@ -1124,12 +1149,13 @@ class GPMDialog(QtWidgets.QMainWindow, FORM_CLASS):
                 datadownload = GPM_download.GPM_download_Class(
                     userPw,
                     userId,
-                    str(startdate),
-                    str(enddate),
-                    HDForTiff,
-                    path,
-                    "UTC",
-                    self.wget_progress,
+                    startdate,
+                    enddate,
+                    # j_date=self.j_date,
+                    gpm_type=HDForTiff,
+                    donwload_folder=path,
+                    timeLabel_type="UTC",
+                    progressbar=self.wget_progress,
                 )
             elif type == "CMORPH":
                 url = (
@@ -1229,6 +1255,8 @@ class GPMDialog(QtWidgets.QMainWindow, FORM_CLASS):
 
     # data 처리
     def check_data_process(self):
+        # GSMaP_TIFF = GSMap_convert_tiff()
+
         if self.rdo_GPM_convert.isChecked():
             self.Convert_hdf5()
         #             self.Convert_crs_tif()
@@ -1237,6 +1265,8 @@ class GPMDialog(QtWidgets.QMainWindow, FORM_CLASS):
             self.Cmorph_process()
 
         elif self.rdo_gsmap_convert.isChecked():
+            # 클래스 인스턴스...?
+            # GSMaP_TIFF.GSMap_Tiff()
             self.GSMap_Tiff()
 
     def select_convert_files(self, format):
@@ -1303,7 +1333,7 @@ class GPMDialog(QtWidgets.QMainWindow, FORM_CLASS):
                 #                 if os.path.exists(folder) == False:
                 #                     os.mkdir(folder)
 
-                self.MaketoTif.append(folder + name + "_precipitationCal.tif")
+                self.MaketoTif.append(folder + name + "_precipitation.tif")
                 output = folder + name + "_" + self.txt_hdf_inName.text() + ".tif"
                 try:
                     username = getpass.getuser()

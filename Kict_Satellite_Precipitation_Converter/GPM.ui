@@ -87,7 +87,7 @@
                                     <item row="6" column="0">
                                       <widget class="QLabel" name="label_30">
                                         <property name="text">
-                                          <string>Start  Date : </string>
+                                          <string>Start Date : </string>
                                         </property>
                                         <property name="alignment">
                                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -215,7 +215,7 @@
                                     <item row="0" column="2">
                                       <widget class="QLabel" name="label_60">
                                         <property name="text">
-                                          <string>Downlaod Type : </string>
+                                          <string>Download Type : </string>
                                         </property>
                                         <property name="alignment">
                                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -459,7 +459,7 @@
                               <item row="0" column="0">
                                 <widget class="QLabel" name="label_50">
                                   <property name="text">
-                                    <string>Start  Date: </string>
+                                    <string>Start Date: </string>
                                   </property>
                                   <property name="alignment">
                                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

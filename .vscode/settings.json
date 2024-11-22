@@ -13,6 +13,7 @@
     "editor.defaultFormatter": "charliermarsh.ruff"
 },
 "python.analysis.extraPaths": [
-    "./Kict_Satellite_Precipitation_Converter/Lib/data_download"
+  "./Kict_Satellite_Precipitation_Converter/Lib/data_download",
+  "./Kict_Satellite_Precipitation_Converter/Lib/convert2tiff"
 ]
 }

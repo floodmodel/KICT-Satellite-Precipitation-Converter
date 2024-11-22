@@ -23,19 +23,54 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
+import configparser
+import logging
+import os
+import tempfile
 
-# noinspection PyPep8Naming
-def classFactory(iface):  # pylint: disable=invalid-name
+import qgis.utils  # type: ignore
+
+# print(qgis.core.Qgis.QGIS_VERSION)
+# from qgis.core import QgsApplication
+# from qgis.utils import plugins
+
+
+def loggingTest():
+    logging.basicConfig(
+        filename="log_test.log",
+        encoding="utf-8",
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+    )
+
+    config = configparser.ConfigParser()
+    config.read(os.path.join(os.path.dirname(__file__), "metadata.txt"))
+
+    plug_v = config.get("general", "version")
+    plugin_v = "Plugin Version", plug_v
+    qgis_v = qgis.core.Qgis.QGIS_VERSION
+    # tmp = tempfile.tempdir = "/temp"
+    logging.info(plugin_v)
+    logging.info(qgis_v)
+    # logging.info(tmp)
+
+    try:
+        logging.debug("debug")
+        logging.warning("warning")
+    except Exception as e:
+        logging.error("error")
+        logging.exception(f"An error occurred: {e}")
+
+
+def classFactory(iface):
     """Load GPM class from file GPM.
 
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface
     """
     #
-    import logging
 
-    logging.basicConfig(filename="log_test.log", encoding="utf-8", level=logging.DEBUG)
-    logging.debug("test")
+    loggingTest()
     from .Util import util
 
     util().import_or_install("imageio")

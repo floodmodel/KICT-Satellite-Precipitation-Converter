@@ -30,11 +30,11 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
 # Initialize Qt resources from file resources.py
-from resources import *
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Import the code for the dialog
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from .GPM_dialog import GPMDialog
+from .resources import *
 
 _iface = {}
 

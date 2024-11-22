@@ -7,7 +7,7 @@
 name=KICT Satellite Precipitation Converter
 qgisMinimumVersion=3.0
 description=KICT Satellite Precipitation Converter Plugin
-version=0.2.0
+version=0.2.3
 author=Hermesys
 email=info@hermesys.co.kr
 
@@ -25,10 +25,10 @@ changelog=
 	KICT Satellite Precipitation Converter In QGIS 3
 	
 	
-	v0.2.0
+	v0.2.3
 		: QGIS 3.34에서 개발 및 TEST 진행 
-		: GUI | GSMap -> GSMaP으로 수정
-		: GSMaP download 시 No Module Error 해결
+		: 플러그인 실행 시 file log 업데이트
+		: Cmorph 변환 파일 변경
 
 # Tags are comma separated with spaces allowed
 tags=python,GPM,CMORPH,GSMaP
