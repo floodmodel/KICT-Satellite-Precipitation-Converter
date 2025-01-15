@@ -1,9 +1,17 @@
 {
-  "notebook.formatOnSave.enabled": true,
-  "notebook.codeActionsOnSave": {
-    "notebook.source.fixAll": "explicit",
-    "notebook.source.organizeImports": "explicit"
-  },
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": [
+    "test"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.nosetestsEnabled": false,
+  "python.linting.enabled": true,
+  "python.linting.flake8Enabled": true,
+  "python.linting.mypyEnabled": true,
+  "python.linting.pylintEnabled": false,
+  "python.defaultInterpreterPath": ".venv\\Scripts\\python.exe",
+  "python.formatting.provider": "none",
+  "editor.formatOnSave": true,
   "[python]": {
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
@@ -11,9 +19,5 @@
       "source.organizeImports": "explicit"
     },
     "editor.defaultFormatter": "charliermarsh.ruff"
-},
-"python.analysis.extraPaths": [
-  "./Kict_Satellite_Precipitation_Converter/Lib/data_download",
-  "./Kict_Satellite_Precipitation_Converter/Lib/convert2tiff"
-]
+  },
 }

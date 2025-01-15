@@ -157,15 +157,15 @@ class GPM_download_Class:
     def get_file_list(self):
         if self.gpm_type == "GPM_3IMERGHHL.07" or self.gpm_type == "GPM_3IMERGHHE.07":
             # if self.gpm_type == "imerg/late" or self.gpm_type == "imerg/early":
+            julian_date = self.__get_julian_date()
             server = "{0}/{1}/{2}/{3}".format(
                 self.url,
                 self.gpm_type,
                 self.year,
                 # self.j_date,
                 # self.year + self.month,
-                self.month + self.day,
+                julian_date,
             )
-            print(server)
 
         # if self.gpm_type == "GPM_3IMERGHHL.07" or self.gpm_type == "GPM_3IMERGHHE.07"
         if (
@@ -229,3 +229,11 @@ class GPM_download_Class:
             cmd,
         )
         subprocess.call(cmd, shell=True)
+
+    def __get_julian_date(self) -> str:
+        # 주어진 연도, 월, 일로 날짜 객체 생성
+        date = datetime(int(self.year), int(self.month), int(self.day))
+        # 줄리안 날짜 계산: 1월 1일부터의 일 수
+        julian_date = date.timetuple().tm_yday
+        julian_date_str = str(julian_date).zfill(3)
+        return julian_date_str

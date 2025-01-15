@@ -1,20 +1,27 @@
 {
   "version": "0.2.0",
   "configurations": [
-      {
-          "name": "QGIS: Remote Attach",
-          "type": "debugpy",
-          "request": "attach",
-          "connect": {
-              "host": "localhost",
-              "port": 5678
-          },
-          "pathMappings": [
-              {
-                  "localRoot": "${workspaceFolder}/Kict_Satellite_Precipitation_Converter",
-                  "remoteRoot": "C:/Users/${env:USERNAME}/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/Kict_Satellite_Precipitation_Converter"
-                }
-          ]
-      }
+    {
+      "name": "Python: pytest",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "justMyCode": true
+    },
+    {
+      "name": "QGIS: Remote Attach",
+      "type": "python",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5678
+      },
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}/Kict_Satellite_Precipitation_Converter",
+          "remoteRoot": "C:/Users/${env:USERNAME}/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/Kict_Satellite_Precipitation_Converter"
+        }
+      ]
+    }
   ]
 }

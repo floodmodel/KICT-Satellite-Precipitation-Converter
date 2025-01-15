@@ -1,0 +1,19 @@
+# Dependency maintenance
+pb_tool
+
+# Testing
+pytest
+pytest-cov
+# pytest-qgis
+
+# Linting and formatting
+pre-commit
+ruff
+flake8
+flake8-bugbear
+flake8-annotations
+flake8-qgis
+
+# Stubs
+PyQt5-stubs
+qgis-stubs
