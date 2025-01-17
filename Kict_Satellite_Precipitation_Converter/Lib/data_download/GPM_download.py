@@ -1,12 +1,11 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+import http.cookiejar
 import os
 import re
 import subprocess
+import urllib.request
 from datetime import datetime, timedelta
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
 wget_path = (
@@ -25,17 +24,14 @@ class GPM_download_Class:
         userInfo,
         getFiledate_1,  # start
         getFiledate_2,  # end
-        # j_date,
         gpm_type,
         donwload_folder,
         timeLabel_type,
         progressbar,
     ):
-        # self.url = "https://jsimpsonhttps.pps.eosdis.nasa.gov/text"
         self.url = "https://gpm1.gesdisc.eosdis.nasa.gov/data/GPM_L3"
         self.userInfo = userInfo
         self.getFiledate_1 = getFiledate_1
-        # self.j_date = j_date
         self.gpm_type = gpm_type
         self.donwload_folder = donwload_folder
         self.timeLabel_type = timeLabel_type.upper()
@@ -43,28 +39,18 @@ class GPM_download_Class:
         self.getFiledate = ""
         self.userpass = userpass
         self.progressbar = progressbar
-        # kst 단위
+
+        # Split username and password
+        self.username, self.password = userInfo, userpass
 
         if self.timeLabel_type == "KST":
             if getFiledate_1 == getFiledate_2:
                 self.days = 0
             else:
-                # self.days = str(
-                #    (datetime.strptime(getFiledate_2, "%Y-%m-%d").date())
-                #    - (datetime.strptime(getFiledate_1, "%Y-%m-%d").date())
-                # ).split(" ")[0]
-
                 self.days = (
                     datetime.strptime(getFiledate_2, "%Y-%m-%d").date()
                     - datetime.strptime(getFiledate_1, "%Y-%m-%d").date()
                 ).days
-
-                # for day in range(int(self.days) + 2):
-                #    self.getFiledate = current_date = datetime.strptime(
-                #        getFiledate_1, "%Y-%m-%d"
-                #    ).date() + timedelta(day)
-
-                # self.j_date = current_date.timetuple().tm_yday
                 self.main()
 
         # UTC 단위
@@ -73,65 +59,133 @@ class GPM_download_Class:
             if getFiledate_1 == getFiledate_2:
                 self.days = 0
             else:
-                self.days = str(
-                    (datetime.strptime(getFiledate_2, "%Y-%m-%d").date())
-                    - (datetime.strptime(getFiledate_1, "%Y-%m-%d").date())
-                ).split(" ")[0]
+                self.days = (
+                    datetime.strptime(getFiledate_2, "%Y-%m-%d").date()
+                    - datetime.strptime(getFiledate_1, "%Y-%m-%d").date()
+                ).days
 
-            for day in range(int(self.days) + 1):
-                self.getFiledate = str(
-                    datetime.strptime(getFiledate_1, "%Y-%m-%d").date() + timedelta(day)
-                )
-                self.year, self.month, self.day = self.getFiledate.split("-")
-                file_list = file_list + self.get_file_list()
-            self.main(file_list)
+            # Convert dates to required format (YYYYMMDD)
+            start_date = datetime.strptime(getFiledate_1, "%Y-%m-%d").strftime("%Y%m%d")
+            end_date = datetime.strptime(getFiledate_2, "%Y-%m-%d").strftime("%Y%m%d")
 
-    def main(self, file_list):
-        # self.year, self.month,self.day = self.getFiledate.split('-')
-        # file_list = self.get_file_list()
+            # Generate URLs for the date range
+            urls = self.generate_gpm_urls(start_date, end_date)
+            self.main(urls)
+
+    def generate_gpm_urls(self, start, end):
+        """
+        Generate URLs for GPM files between start and end dates
+        """
+        # TODO: type에 따라 URL 나누기
+        base_url = f"{self.url}/GPM_3IMERGHHE.07"
+        urls = []
+
+        # Convert string dates to datetime objects
+        start = datetime.strptime(start, "%Y%m%d")
+        end = datetime.strptime(end, "%Y%m%d")
+
+        current_date = start
+        while current_date <= end:
+            # GPM data is available every 30 minutes (48 files per day)
+            index = 0  # Start index for each day (0000, 0030, 0060, ...)
+
+            for hour in range(24):
+                for minute in [0, 30]:
+                    # Format the date and time components
+                    year = current_date.strftime("%Y")
+                    doy = current_date.strftime("%j")
+                    date_str = current_date.strftime("%Y%m%d")
+
+                    # Create the filename
+                    start_time = f"{hour:02d}{minute:02d}00"
+
+                    # Calculate end time properly
+                    if minute == 0:
+                        end_hour = hour
+                        end_minute = 29
+                    else:
+                        end_hour = hour
+                        end_minute = 59
+
+                    end_time = f"{end_hour:02d}{end_minute:02d}59"
+
+                    # Format index as 4 digits (0000, 0030, 0060, ...)
+                    index_str = f"{index:04d}"
+
+                    filename = f"3B-HHR-E.MS.MRG.3IMERG.{date_str}-S{start_time}-E{end_time}.{index_str}.V07B.HDF5"
+
+                    # Construct the full URL
+                    url = f"{base_url}/{year}/{doy}/{filename}"
+                    urls.append(url)
+
+                    # Increment index by 30 for next file
+                    index += 30
+
+            current_date += timedelta(days=1)
+
+        return urls
+
+    def download_gpm_file(self, url):
+        """
+        Download GPM file from NASA GESDISC using urllib with cookie handling
+        """
+        if not os.path.exists(self.donwload_folder):
+            os.makedirs(self.donwload_folder)
+
+        filename = url.split("/")[-1]
+        output_path = os.path.join(self.donwload_folder, filename)
+
+        try:
+            # Create a password manager and cookie jar
+            password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+            password_mgr.add_password(
+                None, "https://urs.earthdata.nasa.gov", self.username, self.password
+            )
+
+            # Create cookie jar and handlers
+            cookie_jar = http.cookiejar.CookieJar()
+            cookie_handler = urllib.request.HTTPCookieProcessor(cookie_jar)
+            password_handler = urllib.request.HTTPBasicAuthHandler(password_mgr)
+
+            # Build opener with both handlers
+            opener = urllib.request.build_opener(cookie_handler, password_handler)
+
+            # Install the opener
+            urllib.request.install_opener(opener)
+
+            # Download the file
+            print(f"Downloading {filename}...")
+            request = urllib.request.Request(url)
+            with opener.open(request) as response:
+                with open(output_path, "wb") as out_file:
+                    out_file.write(response.read())
+            print(f"Downloaded {filename} successfully")
+            return True
+
+        except Exception as e:
+            print(f"Error downloading file: {str(e)}")
+            return False
+
+    def main(self, urls):
         count = 0
-        tiff_list = []
+        total_files = len(urls)
+        self.progressbar.setMaximum(total_files - 1)
+        QApplication.processEvents()
 
-        # 변경 예정 240719-오
-        if self.gpm_type == "GPM_3IMERGHHE.07":
-            # if self.gpm_type == "imerg/gis" or self.gpm_type == "imerg/gis/early":
-            for filename in file_list:
-                if os.path.splitext(filename)[1] == ".tif":
-                    if (("30min") in filename) is True:
-                        tiff_list.append(filename)
+        for url in urls:
+            if self.timeLabel_type == "UTC":
+                self.progressbar.setValue(count)
+                success = self.download_gpm_file(url)
+                if success:
+                    count += 1
+                QApplication.processEvents()
 
-            self.progressbar.setMaximum(len(tiff_list) - 1)
-            QApplication.processEvents()
-            for filename in tiff_list:
-                if self.timeLabel_type == "UTC":
-                    print("UTC")
-                    self.progressbar.setValue(count)
-                    self.get_file(filename)
-                    count = count + 1
-                    QApplication.processEvents()
-            QMessageBox.information(
-                None,
-                "GPM Download ",
-                " Download is complete. Please check the download folder",
-            )
+        QMessageBox.information(
+            None,
+            "GPM Download ",
+            "Download is complete. Please check the download folder",
+        )
 
-        if self.gpm_type == "GPM_3IMERGHHL.07":
-            # if self.gpm_type == "imerg/late" or self.gpm_type == "imerg/early":
-            self.progressbar.setMaximum(len(file_list) - 1)
-            QApplication.processEvents()
-            for filename in file_list:
-                if self.timeLabel_type == "UTC":
-                    self.get_file(filename)
-                    self.progressbar.setValue(count)
-                    count = count + 1
-                    QApplication.processEvents()
-            QMessageBox.information(
-                None,
-                "GPM Download ",
-                " Download is complete. Please check the download folder",
-            )
-
-    # kst 단위 다운로드 방식
     def get_file_list_kst(self, filename):
         kst_list.append(filename)
         donwload_list = []

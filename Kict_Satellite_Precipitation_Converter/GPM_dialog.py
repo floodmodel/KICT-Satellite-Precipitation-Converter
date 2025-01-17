@@ -51,9 +51,6 @@ from qgis.PyQt import QtWidgets, uic
 
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + "/Lib")
 
-# 2022.12.28 조 : imageio가 없어서 기본 설치하도록 수정
-# util.util().import_or_install("pillow")
-# util.util().import_or_install("_imaging")
 import Canvas_Tools
 import imageio
 
@@ -62,8 +59,8 @@ import transpose_Tiff as tr_Tiff
 import util_accum
 from PIL import Image, ImageDraw, ImageFont
 
-sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + "/Lib/data_download")
-import GPM_download
+from Kict_Satellite_Precipitation_Converter import GPM_ui
+from Kict_Satellite_Precipitation_Converter.Lib.data_download import GPM_download
 
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + "/Lib/convert2tiff")
 import GSMap_convert_tiff
@@ -99,7 +96,7 @@ _layers = {}
 DATE_TIME_FORMAT = "yyyy-MM-dd"
 
 
-class GPMDialog(QtWidgets.QMainWindow, FORM_CLASS):
+class GPMDialog(QtWidgets.QMainWindow, GPM_ui.Ui_MainWindow):
     def __init__(self, parent=None):
         super(GPMDialog, self).__init__(parent)
         self.setupUi(self)
@@ -114,10 +111,6 @@ class GPMDialog(QtWidgets.QMainWindow, FORM_CLASS):
     def Setini(self):
         global _layers
         _layers = QgsProject.instance().layerTreeRoot().layerOrder()
-
-        # network_flag = _util.connected_to_internet()
-        # if not(network_flag):
-        #    _util.MessageboxShowError("Network check"," Use is restricted because there is no network connection.")
 
         # 2020-08-20 박: Info창 출력
         mainMenu = self.menuBar()
@@ -383,13 +376,6 @@ class GPMDialog(QtWidgets.QMainWindow, FORM_CLASS):
         self.chk_AddLayer.setChecked(True)
         # Make PNG 체크박스는 기본 체크 상태
         self.chk_makePng.setChecked(True)
-
-        # 멀티 셀렉트 옵션
-        #         self.tbl_asc_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        #         self.btl_png_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
-
-        # Interval_box.  duration 조절, GIF의 속도를 조절.  초기값은 0.5 기본 값으로 셋팅
-        #         self.Interval_box.setValue(0.5)
 
         # 2018-06-11 박:
         self.btn_csvUp.clicked.connect(lambda: self.MoveUp(self.lisw_Convert_file))
