@@ -54,7 +54,6 @@ class GPM_download_Class:
                 self.main()
 
         # UTC 단위
-        file_list = []
         if self.timeLabel_type == "UTC":
             if getFiledate_1 == getFiledate_2:
                 self.days = 0
@@ -77,7 +76,7 @@ class GPM_download_Class:
         Generate URLs for GPM files between start and end dates
         """
         # TODO: type에 따라 URL 나누기
-        base_url = f"{self.url}/GPM_3IMERGHHE.07"
+        base_url = f"{self.url}/{self.gpm_type}"
         urls = []
 
         # Convert string dates to datetime objects
@@ -111,8 +110,15 @@ class GPM_download_Class:
 
                     # Format index as 4 digits (0000, 0030, 0060, ...)
                     index_str = f"{index:04d}"
+                    postfix = (
+                        ""
+                        if self.gpm_type == "GPM_3IMERGHH.07"
+                        else "-E"
+                        if self.gpm_type == "GPM_3IMERGHHE.06"
+                        else "-L"
+                    )
 
-                    filename = f"3B-HHR-E.MS.MRG.3IMERG.{date_str}-S{start_time}-E{end_time}.{index_str}.V07B.HDF5"
+                    filename = f"3B-HHR{postfix}.MS.MRG.3IMERG.{date_str}-S{start_time}-E{end_time}.{index_str}.V07B.HDF5"
 
                     # Construct the full URL
                     url = f"{base_url}/{year}/{doy}/{filename}"
@@ -172,9 +178,9 @@ class GPM_download_Class:
         self.progressbar.setMaximum(total_files - 1)
         QApplication.processEvents()
 
-        for url in urls:
+        for index, url in enumerate(urls):
             if self.timeLabel_type == "UTC":
-                self.progressbar.setValue(count)
+                self.progressbar.setValue(index)
                 success = self.download_gpm_file(url)
                 if success:
                     count += 1
@@ -183,7 +189,7 @@ class GPM_download_Class:
         QMessageBox.information(
             None,
             "GPM Download ",
-            "Download is complete. Please check the download folder",
+            f"Download Complete. {count} files downloaded. {total_files - count} files failed to download.",
         )
 
     def get_file_list_kst(self, filename):

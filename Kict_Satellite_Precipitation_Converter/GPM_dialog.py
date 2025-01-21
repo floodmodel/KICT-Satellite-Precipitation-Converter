@@ -121,7 +121,12 @@ class GPMDialog(QtWidgets.QMainWindow, GPM_ui.Ui_MainWindow):
 
         # 2020-07-14 박: 베이스 맵 선택 콤보 박스
         self.cmb_base_map.addItems(["Select OpenLayers", "Google Map", "OSM"])
-        self.cmb_Downlaod_Type.addItems(["Select download type", "Early", "Late"])
+        self.cmb_Downlaod_Type.addItems(
+            ["Select download type", "Final", "Early", "Late"]
+        )
+
+        self.rdo_HDF5.toggled.connect(self.__update_download_type_options)
+        self.rdio_Tiff.toggled.connect(self.__update_download_type_options)
 
         # 2019-12-20 박: 동희 개발 2줄 탭
         self.qTabBar()
@@ -1088,12 +1093,12 @@ class GPMDialog(QtWidgets.QMainWindow, GPM_ui.Ui_MainWindow):
                     return
 
                 if self.rdo_HDF5.isChecked():
-                    if download_type.upper() == "EARLY":
-                        # HDForTiff = "imerg/early"
-                        HDForTiff = "GPM_3IMERGHHE.07"
+                    if download_type.upper() == "FINAL":
+                        HDForTiff = "GPM_3IMERGHH.07"
+                    elif download_type.upper() == "EARLY":
+                        HDForTiff = "GPM_3IMERGHHE.06"
                     elif download_type.upper() == "LATE":
-                        # HDForTiff = "imerg/late"
-                        HDForTiff = "GPM_3IMERGHHL.07"
+                        HDForTiff = "GPM_3IMERGHHL.06"
                 elif self.rdio_Tiff.isChecked():
                     if download_type.upper() == "EARLY":
                         HDForTiff = "imerg/gis/early"
@@ -1106,25 +1111,11 @@ class GPMDialog(QtWidgets.QMainWindow, GPM_ui.Ui_MainWindow):
                     - datetime.datetime.strptime(startdate, "%Y-%m-%d").date()
                 ).days
 
-                # for day in range(int(self.days) + 2):
-                # current_date = datetime.datetime.strptime(
-                #    startdate, "%Y-%m-%d"
-                # ).date() + datetime.timedelta(days=day)
-
-                # day_of_year = current_date.timetuple().tm_yday
-
-                # self.j_date = f"{day_of_year:03d}"
                 path = self.txt_bat_path.text()
 
-                # url = "https://jsimpsonhttps.pps.eosdis.nasa.gov/text"
                 # 아래 url 24.07.16 수정 - 오
                 url = "https://gpm1.gesdisc.eosdis.nasa.gov/data/GPM_L3"
-                # url = "https://{0}:{1}@urs.earthdata.nasa.gov".format(
-                #    userId, userPw
-                # ) < login and data download url
 
-                # 네트워크 확인해서 접속 끊어 지면 다운로드 중지
-                # network_flag = _util.connected_to_internet(url)
                 network_flag = _util.connected_to_requests(url)
                 if not (network_flag):
                     _util.MessageboxShowError(
@@ -1137,7 +1128,6 @@ class GPMDialog(QtWidgets.QMainWindow, GPM_ui.Ui_MainWindow):
                     userId,
                     startdate,
                     enddate,
-                    # j_date=self.j_date,
                     gpm_type=HDForTiff,
                     donwload_folder=path,
                     timeLabel_type="UTC",
@@ -4919,3 +4909,12 @@ class GPMDialog(QtWidgets.QMainWindow, GPM_ui.Ui_MainWindow):
                 else:
                     value = round((div * i), 2)
                     f.write(str(value) + " " + str(255 - i) + " 255 255\n")
+
+    def __update_download_type_options(self):
+        self.cmb_Downlaod_Type.clear()
+        if self.rdo_HDF5.isChecked():
+            self.cmb_Downlaod_Type.addItems(
+                ["Select download type", "Final", "Early", "Late"]
+            )
+        elif self.rdio_Tiff.isChecked():
+            self.cmb_Downlaod_Type.addItems(["Select download type", "Early", "Late"])
