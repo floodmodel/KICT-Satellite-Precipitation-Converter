@@ -13,12 +13,13 @@ import ftplib
 import getpass
 import os
 import sys
+import urllib.request
 from datetime import datetime, timedelta
 
 import requests
+from PyQt5.QtWidgets import QProgressBar
 
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + "/Lib/data_download")
-import cmorph_download as cmorph
 
 username = getpass.getuser()
 wget_path = os.path.dirname(os.path.abspath(__file__)) + "/Lib/wget.exe"
@@ -39,8 +40,8 @@ def connected_to_internet(url, timeout=5):
 
 # 폴더 생성
 def folder_create(path):
-    if os.path.exists(path) == False:
-        os.mkdir(path)
+    if not os.path.exists(path):
+        os.mkdir(path, exist_ok=True)
 
 
 def ftp_filename_get(char, url, userid, userpw, start, fileFormat):
@@ -212,64 +213,91 @@ def create_bat_script(Id, Pw, start, end, folder, fileFormat, dowload_type, HDFo
 
 
 # CMORPH DATA DOWNLOAD
-def cmorph_data_download(start, end, folder, fileFormat):
-    #     output = os.getenv('USERPROFILE') + '\\Desktop\\' + "{0}_data_download.listing".format("cmorph")
-    output = folder + "/{0}_data_download.listing".format("cmorph")
-
-    cmorph.create_cmorph_batchfile(wget_path, start, end, folder)
-    bat_path = folder + "/cmorph_data_download.bat"
-    ftp_url = "https://ftp.cpc.ncep.noaa.gov/precip/CMORPH_V1.0/CRT/0.25deg-3HLY/"
-    url = "ftp.cpc.ncep.noaa.gov/precip/CMORPH_V1.0/CRT/0.25deg-3HLY/"
-
-    list = []
-    arg = ""
-
+def cmorph_data_download(
+    start: str, end: str, folder: str, time: str, progressbar: QProgressBar
+):
     start = datetime.strptime(start, "%Y-%m-%d").date()
     days = datetime.strptime(end, "%Y-%m-%d").date() - start
+    total_days = days.days + 1
 
-    if os.path.exists(output):
-        os.remove(output)
+    # Set base URL based on time resolution
+    if time == "30min":
+        base_url = "https://www.ncei.noaa.gov/data/cmorph-high-resolution-global-precipitation-estimates/access/30min/8km/"
+        files_per_day = 24
+        file_format = (
+            "CMORPH_V1.0_ADJ_8km-30min_{year}{month:02d}{day:02d}{hour:02d}.nc"
+        )
+    else:  # 1hr
+        base_url = "https://www.ncei.noaa.gov/data/cmorph-high-resolution-global-precipitation-estimates/access/hourly/0.25deg/"
+        files_per_day = 24  # 24 files for hourly resolution
+        file_format = (
+            "CMORPH_V1.0_ADJ_0.25deg-HLY_{year}{month:02d}{day:02d}{hour:02d}.nc"
+        )
 
-    file_listing = open(output, "w+")
-    for i in range(days.days + 1):
-        file = ftp_filename_get("cmorph", url, "", "", start, fileFormat)
-        if "[WinError" in file:
-            print(
-                "create temporary cmorph batch file. \nUse that."
-                + folder
-                + "/cmorph_data_download.bat"
-            )
-            return (
-                "create temporary cmorph batch file. \nUse that."
-                + folder
-                + "/cmorph_data_download.bat"
-            )
+    # Calculate total number of files for progress bar
+    total_files = total_days * files_per_day
+    progressbar.setMaximum(total_files)
+    current_file = 0
 
-        for filename in file:
-            file_listing.write(filename + "\n")
-            #             path = ftp_url+"{0}/{1}/".format(str(start.strftime('%Y'))), str(start.strftime('%Y%m'))+ filename
-            path = ftp_url + "{0}/{1}/{2}".format(
-                str(start.strftime("%Y")), str(start.strftime("%Y%m")), filename
-            )
+    # Create folder if it doesn't exist
+    folder_create(folder)
 
-            # 2022.12.28 조 : CMORPH 의 경우 데이터가 2019까지만 확인되었음.
-            if connected_to_internet(path) == False:
-                return False
-            else:
-                pass
+    current_date = start
+    while current_date <= start + days:
+        # Create year/month/day folder structure
+        date_folder = (
+            f"{current_date.year}/{current_date.month:02d}/{current_date.day:02d}"
+        )
+        full_url = f"{base_url}{date_folder}/"
+        save_folder = folder + "/" + date_folder
 
-            if os.path.exists(folder + "/CMORPH/" + filename):
-                pass
-            else:
-                arg = wget_path + ' -r -nd -P "' '{0}" '.format(
-                    folder + "/CMORPH/"
-                ) + " --limit-rate=20000k --content-on-error {0}".format((path))
-            #                 print (arg)
-            #             print arg
-            list.append(arg)
-        start = start + timedelta(days=1)
-    file_listing.close()
-    return list
+        # print(save_folder)
+
+        os.makedirs(save_folder, exist_ok=True)
+
+        # Download files for each time step
+        if time == "30min":
+            for hour in range(24):
+                filename = file_format.format(
+                    year=current_date.year,
+                    month=current_date.month,
+                    day=current_date.day,
+                    hour=hour,
+                )
+                file_url = f"{full_url}{filename}"
+                save_path = os.path.join(save_folder, filename)
+
+                try:
+                    if not os.path.exists(save_path):
+                        urllib.request.urlretrieve(file_url, save_path)
+                except Exception as e:
+                    print(f"Error downloading {filename}: {str(e)}")
+
+                current_file += 1
+                progressbar.setValue(current_file)
+        else:  # 1hr
+            for hour in range(24):
+                filename = file_format.format(
+                    year=current_date.year,
+                    month=current_date.month,
+                    day=current_date.day,
+                    hour=hour,
+                )
+                file_url = f"{full_url}{filename}"
+                save_path = os.path.join(save_folder, filename)
+
+                try:
+                    if not os.path.exists(save_path):
+                        urllib.request.urlretrieve(file_url, save_path)
+                except Exception as e:
+                    print(f"Error downloading {filename}: {str(e)}")
+
+                current_file += 1
+                progressbar.setValue(current_file)
+
+        current_date += timedelta(days=1)
+
+    progressbar.setValue(total_files)
 
 
 # GSMap DATA DOWNLOAD
@@ -311,20 +339,3 @@ def GSMap_data_download(Id, Pw, start, end, folder, fileformat):
         start = start + timedelta(days=1)
     file_listing.close()
     return list
-
-
-#
-
-# folder='D:/Working/KICT/Gungiyeon/GPM/GPM_test/qgisv3/T_20191206'
-# # print (type(GSMap_data_download("rainmap","Niskur+1404","2014-03-01","2014-03-01",folder,"")))
-# # # # # cmorph_data_download("2018-09-30","2018-10-05")
-# # # # # start =  datetime.strptime("2018-09-30", "%Y-%m-%d").date()
-# # # # # end =  datetime.strptime("2018-10-05", "%Y-%m-%d").date()
-# start = "2014-03-01"
-# end = "2014-03-02"
-# cmorph_data_download(start,end,folder,""))
-
-# url="https://jsimpsonhttps.pps.eosdis.nasa.gov/imerg/early/"
-# userid="jh-kim@kict.re.kr"
-# start="20190819"
-# print(ftp_filename_get("GPM",url,userid, userid,start,""))
