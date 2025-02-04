@@ -10,7 +10,6 @@ import sys
 import urllib.request
 from subprocess import Popen, call
 
-import pip
 import requests
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -106,10 +105,18 @@ class util:
     def import_or_install(self, package):
         try:
             __import__(package)
-        #             python3 -m pip install --ignore-installed --no-cache-dir --user imageio
         except ImportError:
-            # subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-            pip.main(["install", package])
+            try:
+                import subprocess
+                import sys
+
+                subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+            except subprocess.CalledProcessError as e:
+                print(f"패키지 설치 중 오류 발생: {e}")
+                raise
+            except Exception as e:
+                print(f"예상치 못한 오류 발생: {e}")
+                raise
 
     # 파일 존재 유무 확인
     def CheckFile(self, path):
