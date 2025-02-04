@@ -1113,7 +1113,6 @@ class GPMDialog(QtWidgets.QMainWindow, GPM_ui.Ui_MainWindow):
 
                 path = self.txt_bat_path.text()
 
-                # 아래 url 24.07.16 수정 - 오
                 url = "https://gpm1.gesdisc.eosdis.nasa.gov/data/GPM_L3"
 
                 network_flag = _util.connected_to_requests(url)
@@ -1137,19 +1136,13 @@ class GPMDialog(QtWidgets.QMainWindow, GPM_ui.Ui_MainWindow):
                 url = (
                     "https://ftp.cpc.ncep.noaa.gov/precip/CMORPH_V1.0/CRT/0.25deg-3HLY"
                 )
-                datadownload = wget.cmorph_data_download(
+                wget.cmorph_data_download(
                     self.start_date_2.text(),
                     self.end_date_2.text(),
                     self.txt_bat_path_2.text(),
-                    "",
+                    self.cmorph_time.currentText(),
+                    self.wget_progress,
                 )
-                if datadownload == False:
-                    _util.MessageboxShowError(
-                        "KICT Satellite Precipitation Converter", "Check original data."
-                    )
-                    return
-                else:
-                    pass
 
             elif type == "GSMAP":
                 userId = self.txt_userID_1.text()
@@ -1173,7 +1166,7 @@ class GPMDialog(QtWidgets.QMainWindow, GPM_ui.Ui_MainWindow):
                     "",
                 )
 
-            if type == "CMORPH" or type == "GSMAP":
+            if type == "GSMAP":
                 count = 0
                 self.wget_progress.setMaximum(len(datadownload))
                 QApplication.processEvents()

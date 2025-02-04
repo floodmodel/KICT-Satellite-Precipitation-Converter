@@ -7,7 +7,7 @@
 name=KICT Satellite Precipitation Converter
 qgisMinimumVersion=3.0
 description=KICT Satellite Precipitation Converter Plugin
-version=0.2.5
+version=0.2.7
 author=Hermesys
 email=info@hermesys.co.kr
 
