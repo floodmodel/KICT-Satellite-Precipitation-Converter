@@ -8,22 +8,23 @@ import re
 import ssl
 import sys
 import urllib.request
+from configparser import ConfigParser
 from subprocess import Popen, call
 
 import requests
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from qgis.core import *
+import win32api
+from PyQt5.QtWidgets import QMessageBox
+from qgis.core import (
+    QgsMapLayer,
+    QgsMessageLog,
+    QgsProject,
+)
 
-# from qgis.core import QgsMapLayerRegistry
+# from qgis.core import QgsProject
 # reload(sys)
 # sys.setdefaultencoding('utf-8')
-qgis_paths = QgsApplication.showSettings()
-qgis_paths = qgis_paths.split("\n")
-
-qgis_path = str(os.path.dirname(os.path.dirname(str(qgis_paths[1].split("\t\t")[1]))))
-osgeo4w = qgis_path + "/OSGeo4W.bat"
+qgis_path = os.environ.get("OSGEO4W_ROOT")
+osgeo4w = os.path.join(qgis_path, "OSGeo4W.bat")
 
 
 class util:
@@ -76,7 +77,7 @@ class util:
             return ""
         else:
             layer = None
-            for lyr in QgsMapLayerRegistry.instance().mapLayers().values():
+            for lyr in QgsProject.instance().mapLayers().values():
                 if lyr.name() == layername:
                     layer = lyr
             return layer.dataProvider().dataSourceUri()
@@ -85,10 +86,10 @@ class util:
     def GetTxtToLayerPath(self, layernametxt):
         layername = layernametxt
         layer = None
-        for lyr in QgsMapLayerRegistry.instance().mapLayers().values():
+        for lyr in QgsProject.instance().mapLayers().values():
             if lyr.name() == layername:
                 layer = lyr
-        if layer != None:
+        if layer is not None:
             return layer.dataProvider().dataSourceUri()
         else:
             return "Null"
@@ -96,7 +97,7 @@ class util:
     def GetLayerPath(self, layername):
         layername = layername
         layer = None
-        for lyr in QgsMapLayerRegistry.instance().mapLayers().values():
+        for lyr in QgsProject.instance().mapLayers().values():
             if lyr.name() == layername:
                 layer = lyr
         return layer.dataProvider().dataSourceUri()
@@ -315,7 +316,7 @@ class util:
     def GetcomboSelectedLayerPath(self, commbox):
         layername = commbox.currentText()
         layer = None
-        for lyr in QgsMapLayerRegistry.instance().mapLayers().values():
+        for lyr in QgsProject.instance().mapLayers().values():
             if lyr.name() == layername:
                 layer = lyr
         return layer.dataProvider().dataSourceUri()
@@ -391,7 +392,7 @@ class util:
 
     # 폴더 생성
     def mk_folder(self, path):
-        if os.path.exists(path) == False:
+        if os.path.exists(path) is False:
             os.mkdir(path)
 
     # 2024.05 오 수정
