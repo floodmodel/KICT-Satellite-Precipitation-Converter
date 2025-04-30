@@ -20,9 +20,6 @@ from qgis.core import (
     QgsProject,
 )
 
-# from qgis.core import QgsProject
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
 qgis_path = os.environ.get("OSGEO4W_ROOT")
 osgeo4w = os.path.join(qgis_path, "OSGeo4W.bat")
 
@@ -344,11 +341,8 @@ class util:
         pyVer3 = sys.version_info >= (3, 0)
         if pyVer3:  # for Ver 3 or later
             encText = string
-        else:  # for Ver 2.x
-            if type(text) is not unicode:
-                encText = string.decode("utf-8")
-            else:
-                encText = string
+        else:
+            encText = string
 
         hanCount = len(re.findall("[\u3130-\u318f\uac00-\ud7a3]+", encText))
         if hanCount > 0:
@@ -356,19 +350,12 @@ class util:
         else:
             return False
 
-    #         strs = re.sub('[^가-힣]', '', string.decode('utf-8').encode('utf-8'))
-    #         if len(strs)>0:
-    #             return True
-    #         else :
-    #             return False
     # 숫자 여부
     def isdecimal(self, str):
         if str.isdecimal() == True:
             return str
         else:
             return "Press number"
-
-    #
 
     def Execute(self, arg):
         CREATE_NO_WINDOW = 0x08000000
